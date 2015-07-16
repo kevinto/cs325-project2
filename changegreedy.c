@@ -10,6 +10,8 @@
 #include <limits.h>
 #include "filefunctions.h"
 
+void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount);
+
 // Program entry point
 int main(int argc, char *argv[])
 {
@@ -21,16 +23,39 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		// Check if input file exists
-		// Get the number of lines in the file
-		// Calculate how many problem sets are in the file.
-		//	- In the file, a problem should consist of two lines:
-		//		1. The array of denomination amounts
-		//		2. The actual amount we need to add up to using the denomination amounts
+		int i;
+		int numberOfElements = 0;
+		int changeAmount = 0;
+		int lineContainingArray = 0;
+		int lineContainingChangeAmount = 0;
+		char *inputFileName = argv[1];
+
+		int numberOfLines = numberOfLinesInFile(inputFileName);
+		int numberOfProblemsToProcess = numberOfLines / 2;
+
+		// Run the algorithm problem in the input file. A problem
+		//	consists of the array of denominations and the amount
+		//  of change.
+		for (i = 0; i < numberOfProblemsToProcess; i++)
+		{
+			lineContainingArray = i + i;
+			numberOfElements = getNumberOfElementsInLine(inputFileName, lineContainingArray);
+
+			int *inputArray = malloc(numberOfElements * sizeof(int));
+
+			// Fill the input array with the numbers from line i in the file
+			fillIntArray(inputFileName, lineContainingArray, inputArray, numberOfElements);
+
+			lineContainingChangeAmount = (2 * i) + 1;
+			changeAmount = getChangeAmount(inputFileName, lineContainingChangeAmount);
+
+			executeAlgorithm(inputArray, numberOfElements, changeAmount);
+
+			// Cleanup dynamically allocated strings
+			free(inputArray);
+		}
 	}
 
-	testfunction();
-	printf("Hello world changegreedy\n");
 	return 0;
 }
 
@@ -47,44 +72,9 @@ int main(int argc, char *argv[])
  * *  to the MSS_Results.txt file
  * *
  * ***************************************************************/
-void executeAlgorithm(int *inputArray, int numberOfElements)
+void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount)
 {
-	// int i;
-	// int currentInputArrayIdx = 0;
-	// int lastLow = 0;
-	// int lastHigh = 0;
-	// int finalSum = 0;
+	// Write algorithm here
 
-	// // Run the divide and conquer algo
-	// maxSubArray(inputArray, 0, numberOfElements - 1, &lastLow, &lastHigh, &finalSum);
-
-	// // Check if the number of result elements is within the bounds
-	// int numberOfResultElements = lastHigh - lastLow + 1;
-	// if (numberOfResultElements <= 0)
-	// {
-	// 	printf("Error: invalid amount of result elements\n");
-	// 	return;
-	// }
-
-	// // Generate the results array
-	// int *resultArray = malloc(numberOfResultElements * sizeof(int));
-	// for (i = 0; i < numberOfResultElements; i++)
-	// {
-	// 	currentInputArrayIdx = lastLow + i;
-	// 	if ((currentInputArrayIdx >= numberOfElements) || (currentInputArrayIdx < 0))
-	// 	{
-	// 		printf("Error: Out of bounds of the input array\n");
-	// 	}
-
-	// 	resultArray[i] = inputArray[lastLow + i];
-	// }
-
-	// // Output the result to results file
-	// outputResultToFile(resultArray, numberOfResultElements, inputArray, numberOfElements);
-
-	// // For debugging purposes only
-	// // displayIntArray(resultArray, numberOfResultElements);
-	// // printf("\n");
-
-	// free(resultArray);
+	// Output function still needs to be implemented
 }

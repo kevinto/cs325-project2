@@ -73,7 +73,7 @@ void fillIntArray(char *inputFileName, int inputLineNumber, int *inputArray, int
 	char stringValue[MAX_INPUT_LINE_SIZE];
 	getLineFromFile(inputFileName, inputLineNumber, stringValue);
 
-	// Establish string and get the first token 
+	// Establish string and get the first token
 	int currentNumber;
 	int currentInputArrayIdx = 0;
 	char *token = strtok(stringValue, ",[]");
@@ -95,6 +95,42 @@ void fillIntArray(char *inputFileName, int inputLineNumber, int *inputArray, int
 	}
 }
 
+int getChangeAmount(char *inputFileName, int inputLineNumber)
+{
+	int changeAmount = 0;
+	FILE *fp;
+	fp = fopen(inputFileName, "r");
+
+	if (fp == 0)
+	{
+		perror("Failed to open file");
+	}
+	else
+	{
+		int lineNumber = 0;
+		char line[MAX_INPUT_LINE_SIZE];
+
+		// Read the line
+		while (fgets(line, sizeof(line), fp) != 0)
+		{
+			// Break the loop if we are at the line we want
+			if (lineNumber == inputLineNumber)
+			{
+				break;
+			}
+			lineNumber++;
+		}
+
+		RemoveNewLineAndAddNullTerm(line);
+		// printf("%s\n", line);
+
+		sscanf(line, "%d", &changeAmount);
+		fclose(fp);
+	}
+
+	return changeAmount;
+}
+
 int getNumberOfElementsInLine(char *inputFileName, int inputLineNumber)
 {
 	int numberOfElements = 0;
@@ -103,7 +139,7 @@ int getNumberOfElementsInLine(char *inputFileName, int inputLineNumber)
 
 	if (fp == 0)
 	{
-		perror("Failed to open file: MSS_Problems.txt");
+		perror("Failed to open file");
 	}
 	else
 	{
@@ -141,7 +177,7 @@ void getLineFromFile(char *inputFileName, int inputLineNumber, char *stringValue
 
 	if (fp == 0)
 	{
-		perror("Failed to open file: MSS_Problems.txt");
+		perror("Failed to open file");
 	}
 	else
 	{
