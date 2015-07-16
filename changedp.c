@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include "filefunctions.h"
 
 // Program entry point
 int main(int argc, char *argv[])

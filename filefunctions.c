@@ -301,3 +301,8 @@ void RemoveNewLineAndAddNullTerm(char *stringValue)
 		stringValue[ln] = '\0';
 	}
 }
+
+void testfunction()
+{
+	printf("hello from ff\n");
+}

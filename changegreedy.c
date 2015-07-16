@@ -1,6 +1,6 @@
 /**************************************************************
- * *  Filename: .c
- * *  Coded by:
+ * *  Filename: changegreedy.c
+ * *  Coded by: Kevin
  * *  Purpose -
  * *
  * ***************************************************************/
@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include "filefunctions.h"
 
 // Program entry point
 int main(int argc, char *argv[])
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
 	{
 		// A file name was not entered as a program argument
 		printf( "usage: %s filename\n", argv[0] );
+		return 1;
 	}
 	else
 	{
@@ -24,9 +26,10 @@ int main(int argc, char *argv[])
 		// Calculate how many problem sets are in the file.
 		//	- In the file, a problem should consist of two lines:
 		//		1. The array of denomination amounts
-		//		2. The actu
+		//		2. The actual amount we need to add up to using the denomination amounts
 	}
 
+	testfunction();
 	printf("Hello world changegreedy\n");
 	return 0;
 }
