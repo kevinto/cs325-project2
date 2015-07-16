@@ -1,6 +1,6 @@
 /**************************************************************
  * *  Filename: changegreedy.c
- * *  Coded by: Kevin
+ * *  Coded by: Kevin To
  * *  Purpose -
  * *
  * ***************************************************************/
@@ -10,7 +10,7 @@
 #include <limits.h>
 #include "filefunctions.h"
 
-void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount);
+void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, char *inputFileName);
 
 // Program entry point
 int main(int argc, char *argv[])
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 			lineContainingChangeAmount = (2 * i) + 1;
 			changeAmount = getChangeAmount(inputFileName, lineContainingChangeAmount);
 
-			executeAlgorithm(inputArray, numberOfElements, changeAmount);
+			executeAlgorithm(inputArray, numberOfElements, changeAmount, inputFileName);
 
 			// Cleanup dynamically allocated strings
 			free(inputArray);
@@ -61,20 +61,43 @@ int main(int argc, char *argv[])
 
 /**************************************************************
  * * Entry:
- * *  inputArray - The input array to run the algo on.
- * *  numberOfElements - The number of elements in the array
+ * *  inputArray - The input array containing the coin denominations.
+ * *  numberOfElements - The number of elements in the array.
+ * *  changeAmount - The change amount.
+ * *  inputFileName - The input file name.
  * *
  * * Exit:
  * *  n/a
  * *
  * * Purpose:
- * *  Executes the divide and conquer algorithm and puts the results
- * *  to the MSS_Results.txt file
+ * *  Executes the algorithm
  * *
  * ***************************************************************/
-void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount)
+void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, char *inputFileName)
 {
 	// Write algorithm here
+	int minNumberOfCoins = 0; // Need to get this value
 
-	// Output function still needs to be implemented
+	// TODO: Output function still needs to be implemented
+	// Generate the results array
+	// int *resultArray = malloc(minNumberOfCoins * sizeof(int));
+	// for (i = 0; i < minNumberOfCoins; i++)
+	// {
+	// 	currentInputArrayIdx = lastLow + i;
+	// 	if ((currentInputArrayIdx >= numberOfElements) || (currentInputArrayIdx < 0))
+	// 	{
+	// 		printf("Error: Out of bounds of the input array\n");
+	// 	}
+
+	// 	resultArray[i] = inputArray[lastLow + i];
+	// }
+
+	// // Output the result to results file
+	// outputResultToFile(resultArray, minNumberOfCoins, inputArray, numberOfElements);
+
+	// // For debugging purposes only
+	// // displayIntArray(resultArray, minNumberOfCoins);
+	// // printf("\n");
+
+	// free(resultArray);
 }
