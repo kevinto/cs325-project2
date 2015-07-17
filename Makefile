@@ -31,4 +31,4 @@ program3: ${SRC3}
 	${CXX} ${SRC3} ${SRC4} ${HEADERS} -o ${PROG3}  
 
 clean:
-	rm -rf ${PROGS} *change.txt
+	rm -rf ${PROGS} *Amount.txt

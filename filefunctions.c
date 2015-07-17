@@ -8,59 +8,55 @@
 
 /**************************************************************
  * * Entry:
- * *  resultArray - the int array of the algorithm result
- * *  resultArraySize - the result array size
- * *  originalArray - the original int array containing all the values
- * *  originalArraySize - the original array size
+ * *  resultChangeArray - The array containing the amount of each denomination
+ * *  numberOfElements - The result array size
+ * *  minNumberOfCoins - The minimum number of coins
+ * *  inputFileName - The input file name
  * *
  * * Exit:
  * *  n/a
  * *
  * * Purpose:
- * *  Outputs the original array, the result array, and the sum of
- * *  result array into MSS_Results.txt
+ * *  Outputs the results to [inputFileName]Amount.txt
  * *
  * ***************************************************************/
-void outputResultToFile(int *resultArray, int resultArraySize, int *originalArray, int originalArraySize)
+void outputResultToFile(int *resultChangeArray, int numberOfElements, int minNumberOfCoins, char *inputFileName)
 {
-	FILE *outputFile = fopen("MSS_Results.txt", "a");
+	// TODO: create function to remove the
+	char inputFileNameNoExt[MAX_INPUT_LINE_SIZE];
+	strncpy(inputFileNameNoExt, inputFileName, MAX_INPUT_LINE_SIZE - 1);
 
-	// Output the original input array
+	// Remove the extension from the input file name
+	if (strstr(inputFileName, ".txt") != NULL) {
+		int inputFileNameLen = strlen(inputFileNameNoExt);
+		inputFileNameNoExt[inputFileNameLen - 4] = 0;
+	}
+
+	// Create the output file name
+	char outputFileName[MAX_INPUT_LINE_SIZE - 1];
+	strncpy(outputFileName, inputFileNameNoExt, MAX_INPUT_LINE_SIZE - 1);
+	strncat(outputFileName, "Amount.txt", MAX_INPUT_LINE_SIZE - 1);
+
+	FILE *outputFile = fopen(outputFileName, "a");
+
+	// Output the array containing the change amount of each denomination
 	fprintf(outputFile, "%c", '[');
 	int i;
-	for (i = 0; i < originalArraySize; ++i)
+	for (i = 0; i < numberOfElements; ++i)
 	{
 		// Do not write comma if first element
 		if (i != 0)
 		{
 			fprintf(outputFile, "%s", ", ");
 		}
-		fprintf(outputFile, "%d", originalArray[i]);
+		fprintf(outputFile, "%d", resultChangeArray[i]);
 	}
-
 	fprintf(outputFile, "%c", ']');
 	fprintf(outputFile, "%c", '\n');
 
-	// Output the max sequence
-	fprintf(outputFile, "%c", '[');
-	int resultArraySum = 0;
-	for (i = 0; i < resultArraySize; ++i)
-	{
-		// Do not write comma if first element
-		if (i != 0)
-		{
-			fprintf(outputFile, "%s", ", ");
-		}
-		fprintf(outputFile, "%d", resultArray[i]);
-		resultArraySum += resultArray[i];
-	}
-
-	fprintf(outputFile, "%c", ']');
+	// Output the minimum number of coins needed
+	fprintf(outputFile, "%d", minNumberOfCoins);
 	fprintf(outputFile, "%c", '\n');
-
-	// Output the sum of the result array
-	fprintf(outputFile, "%d", resultArraySum);
-	fprintf(outputFile, "%s", "\n\n");
 
 	fclose(outputFile);
 }
@@ -252,6 +248,11 @@ int numberOfLinesInFile(char *fileName)
 	FILE *fp;
 	fp = fopen(fileName, "r");
 
+	if (fp == 0)
+	{
+		printf("Error: file not found\n");
+	}
+
 	// Count each newline character as a line
 	while (!feof(fp))
 	{
@@ -336,6 +337,20 @@ void RemoveNewLineAndAddNullTerm(char *stringValue)
 	{
 		stringValue[ln] = '\0';
 	}
+}
+
+int fileExists(char *fileName)
+{
+	FILE *fp;
+	fp = fopen(fileName, "r");
+
+	if (fp == 0)
+	{
+		return 0;
+	}
+	fclose(fp);
+
+	return 1;
 }
 
 void testfunction()

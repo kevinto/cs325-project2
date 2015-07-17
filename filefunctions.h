@@ -16,8 +16,9 @@ int getNumberOfElementsInLine(char *inputFileName, int inputLineNumber);
 void RemoveNewLineAndAddNullTerm(char *stringValue);
 int countElementsInString(char *stringValue);
 void getLineFromFile(char *inputFileName, int inputLineNumber, char *stringValue);
-void outputResultToFile(int *resultArray, int arraysize, int *originalArray, int originalArraySize);
+void outputResultToFile(int *resultChangeArray, int numberOfElements, int minNumberOfCoins, char *inputFileName);
 void testfunction();
 int getChangeAmount(char *inputFileName, int inputLineNumber);
+int fileExists(char *fileName);
 
 #endif

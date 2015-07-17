@@ -23,6 +23,13 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
+		// Check if file exists
+		if (fileExists(argv[1]) == 0)
+		{
+			printf("Error: File does not exist\n");
+			return 1;
+		}
+		
 		int i;
 		int numberOfElements = 0;
 		int changeAmount = 0;
@@ -77,5 +84,19 @@ void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, c
 {
 	// Write algorithm here
 
-	// Output function still needs to be implemented
+	// TODO: Need to get this value. This is currently a test value
+	int minNumberOfCoins = 3;
+
+	// TODO: Generate the results array. Need to get this value. This is currently a test value
+	int *resultChangeArray = malloc(numberOfElements * sizeof(int));
+	int i;
+	for (i = 0; i < numberOfElements; i++)
+	{
+		resultChangeArray[i] = i;
+	}
+
+	// // Output the result to results file
+	outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
+
+	free(resultChangeArray);
 }
