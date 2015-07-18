@@ -83,23 +83,33 @@ int main(int argc, char *argv[])
  * ***************************************************************/
 void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, char *inputFileName)
 {
-    // Write algorithm here
-    // Find the largest coin that fits into the changeAmount
-    // Subtract the largest coin by the change amount
-
+    // Greedy algorithm pseudocode
     // For each element in the inputArray starting from the last element to the first
-        // if the current element is
+        // while the current element <= changeAmount
+            // subtract the current element value from the changeAmount
+            // increment the current denomination in the change denomination array
+            // increment the minNumberOfCoins
 
-    // TODO: Need to get this value. This is currently a test value
-    int minNumberOfCoins = 3;
-
-    // TODO: Generate the results array. Need to get this value. This is currently a test value
-    int *resultChangeArray = malloc(numberOfElements * sizeof(int));
+    // Create and initialize the array to hold denomination amounts
     int i;
+    int *resultChangeArray = malloc(numberOfElements * sizeof(int));
     for (i = 0; i < numberOfElements; i++)
     {
-        resultChangeArray[i] = i;
+        resultChangeArray[i] = 0;
     }
+
+    int minNumberOfCoins = 0;
+    for (i = numberOfElements - 1; i >= 0; i--)
+    {
+        while (inputArray[i] <= changeAmount)
+        {
+            changeAmount -= inputArray[i];
+            resultChangeArray[i]++;
+            minNumberOfCoins++;
+            // printf("change amount after subtraction: %d\n", changeAmount);
+        }
+    }
+    // printf("change amount: %d\n", changeAmount);
 
     // // Output the result to results file
     outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
