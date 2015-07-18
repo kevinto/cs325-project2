@@ -1,7 +1,8 @@
 /**************************************************************
- * *  Filename: .c
- * *  Coded by:
- * *  Purpose -
+ * *  Filename: changeslow.c
+ * *  Coded by: Matt Walz
+ * *  Purpose - Recursive/Brute-Force method of solving the minimum
+ * *    number of coins of provided denominations to make change, k.
  * *
  * ***************************************************************/
 
@@ -10,7 +11,7 @@
 #include <limits.h>
 #include "filefunctions.h"
 
-void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, char *inputFileName);
+int executeAlgorithm(int *inputArray, int *resultChangeArray, int numberOfElements, int changeAmount);
 
 // Program entry point
 int main(int argc, char *argv[])
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 		
-		int i;
+		int i, j;
 		int numberOfElements = 0;
 		int changeAmount = 0;
 		int lineContainingArray = 0;
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
 
 		int numberOfLines = numberOfLinesInFile(inputFileName);
 		int numberOfProblemsToProcess = numberOfLines / 2;
+		int minNumberOfCoins;
 
 		// Run the algorithm problem in the input file. A problem
 		//	consists of the array of denominations and the amount
@@ -49,6 +51,10 @@ int main(int argc, char *argv[])
 			numberOfElements = getNumberOfElementsInLine(inputFileName, lineContainingArray);
 
 			int *inputArray = malloc(numberOfElements * sizeof(int));
+			int *resultChangeArray = malloc(numberOfElements * sizeof(int));
+			for (j = 0; j < numberOfElements; j++) {
+				resultChangeArray[j] = 0;
+			}
 
 			// Fill the input array with the numbers from line i in the file
 			fillIntArray(inputFileName, lineContainingArray, inputArray, numberOfElements);
@@ -56,10 +62,14 @@ int main(int argc, char *argv[])
 			lineContainingChangeAmount = (2 * i) + 1;
 			changeAmount = getChangeAmount(inputFileName, lineContainingChangeAmount);
 
-			executeAlgorithm(inputArray, numberOfElements, changeAmount, inputFileName);
+			minNumberOfCoins = executeAlgorithm(inputArray, resultChangeArray, numberOfElements, changeAmount);
 
-			// Cleanup dynamically allocated strings
+			// Output the result to results file
+			outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
+			
+			// Cleanup dynamically allocated arrays
 			free(inputArray);
+			free(resultChangeArray);
 		}
 	}
 
@@ -80,23 +90,29 @@ int main(int argc, char *argv[])
  * *  Executes the algorithm
  * *
  * ***************************************************************/
-void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, char *inputFileName)
+int executeAlgorithm(int *inputArray, int *resultChangeArray, int numberOfElements, int changeAmount)
 {
 	// Write algorithm here
-	
-	// TODO: Need to get this value. This is currently a test value
-	int minNumberOfCoins = 3; 
-
-	// TODO: Generate the results array. Need to get this value. This is currently a test value
-	int *resultChangeArray = malloc(numberOfElements * sizeof(int));
-	int i;
-	for (i = 0; i < numberOfElements; i++)
-	{
-		resultChangeArray[i] = i;
+	int minNumberOfCoins = INT_MAX;
+	int i = 0;
+	int temp_i;
+	int temp_min;
+	int temp_changeAmount;
+	for (i = 0; i < numberOfElements; i++) {
+	    if (inputArray[i] == changeAmount) {
+		    resultChangeArray[i] = resultChangeArray[i] + 1;
+			minNumberOfCoins = 1;
+			return minNumberOfCoins;
+		}
+		else if (inputArray[i] < changeAmount) {
+			temp_changeAmount = changeAmount - inputArray[i];
+		    temp_min = 1 + executeAlgorithm(inputArray, resultChangeArray, numberOfElements, temp_changeAmount);
+			if (temp_min < minNumberOfCoins) {
+				minNumberOfCoins = temp_min;
+				temp_i = i;
+			}
+		}
 	}
-
-	// // Output the result to results file
-	outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
-
-	free(resultChangeArray);
+	resultChangeArray[temp_i] = resultChangeArray[temp_i] + 1;
+	return minNumberOfCoins;
 }
