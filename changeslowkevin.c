@@ -18,6 +18,7 @@ void resetArrays(int *array, int arrLen);
 void pushArr(int *array, int arrLen, int value);
 void popArr(int *array, int arrLen);
 void copyArray(int *source, int *target, int numElements);
+void CopyMinPathToResultArray(int *minPath, int minArrayLen, int *inputArray, int *resultChangeArray, int numberOfElements);
 
 // Program entry point
 int main(int argc, char *argv[])
@@ -88,11 +89,9 @@ int main(int argc, char *argv[])
 
 			// TODO
 			// 1. rename cw, cm
-			// 2. initite arrays cw and cm - DONE
-			// 3. write push, pop, and clear for cw and cm - DONE
 
 			// Output the result to results file
-			// CopyMinPathToResultArray(cm, ARR_MAX, resultChangeArray, numberOfElements);
+			CopyMinPathToResultArray(cm, ARR_MAX, inputArray, resultChangeArray, numberOfElements);
 			outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
 
 			// Cleanup dynamically allocated arrays
@@ -242,6 +241,32 @@ void copyArray(int *source, int *target, int numElements)
 		{
 			break;
 		}
+
+		// Gives us an out for the while loop
+		stopLimit++;
+		if (stopLimit >= 1000)
+		{
+			break;
+		}
+	}
+}
+
+void CopyMinPathToResultArray(int *minPath, int minArrayLen, int *inputArray, int *resultChangeArray, int numberOfElements)
+{
+	int stopLimit = 0;
+	int i = 0;
+	int j = 0;
+
+	while (minPath[i] != -1)
+	{
+		for (j = 0; j < numberOfElements; j++)
+		{
+			if (inputArray[j] == minPath[i])
+			{
+				resultChangeArray[j]++;
+			}
+		}
+		i++;
 
 		// Gives us an out for the while loop
 		stopLimit++;
