@@ -11,7 +11,8 @@
 #include <limits.h>
 #include "filefunctions.h"
 
-int executeAlgorithm(int *inputArray, int *resultChangeArray, int numberOfElements, int changeAmount);
+int executeAlgorithm(int *inputArray, int *coinArray, int numberOfElements, int changeAmount);
+void createResultChangeArray(int* resultChangeArray, int* coinArray, int* inputArray, int numberOfElements, int changeAmount);
 
 // Program entry point
 int main(int argc, char *argv[])
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 		
-		int i, j;
+		int i, j, k;
 		int numberOfElements = 0;
 		int changeAmount = 0;
 		int lineContainingArray = 0;
@@ -49,26 +50,30 @@ int main(int argc, char *argv[])
 		{
 			lineContainingArray = i + i;
 			numberOfElements = getNumberOfElementsInLine(inputFileName, lineContainingArray);
-
 			int *inputArray = malloc(numberOfElements * sizeof(int));
 			int *resultChangeArray = malloc(numberOfElements * sizeof(int));
 			for (j = 0; j < numberOfElements; j++) {
 				resultChangeArray[j] = 0;
 			}
-
 			// Fill the input array with the numbers from line i in the file
 			fillIntArray(inputFileName, lineContainingArray, inputArray, numberOfElements);
 
 			lineContainingChangeAmount = (2 * i) + 1;
 			changeAmount = getChangeAmount(inputFileName, lineContainingChangeAmount);
-
-			minNumberOfCoins = executeAlgorithm(inputArray, resultChangeArray, numberOfElements, changeAmount);
-
+			int *coinArray = malloc(changeAmount * sizeof(int));
+			for (k = 0; k < changeAmount; k++) {
+				coinArray[k] = INT_MIN;
+			}
+			minNumberOfCoins = executeAlgorithm(inputArray, coinArray, numberOfElements, changeAmount);
+		
+			createResultChangeArray(resultChangeArray, coinArray, inputArray, numberOfElements, changeAmount);
 			// Output the result to results file
 			outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
+//			outputResultToFile(coinArray, changeAmount, minNumberOfCoins, inputFileName);			
 			
 			// Cleanup dynamically allocated arrays
 			free(inputArray);
+			free(coinArray);
 			free(resultChangeArray);
 		}
 	}
@@ -90,7 +95,7 @@ int main(int argc, char *argv[])
  * *  Executes the algorithm
  * *
  * ***************************************************************/
-int executeAlgorithm(int *inputArray, int *resultChangeArray, int numberOfElements, int changeAmount)
+int executeAlgorithm(int *inputArray, int *coinArray, int numberOfElements, int changeAmount)
 {
 	// Write algorithm here
 	int minNumberOfCoins = INT_MAX;
@@ -100,19 +105,40 @@ int executeAlgorithm(int *inputArray, int *resultChangeArray, int numberOfElemen
 	int temp_changeAmount;
 	for (i = 0; i < numberOfElements; i++) {
 	    if (inputArray[i] == changeAmount) {
-		    resultChangeArray[i] = resultChangeArray[i] + 1;
+		    coinArray[changeAmount] = i;
 			minNumberOfCoins = 1;
 			return minNumberOfCoins;
 		}
 		else if (inputArray[i] < changeAmount) {
 			temp_changeAmount = changeAmount - inputArray[i];
-		    temp_min = 1 + executeAlgorithm(inputArray, resultChangeArray, numberOfElements, temp_changeAmount);
+		    temp_min = 1 + executeAlgorithm(inputArray, coinArray, numberOfElements, temp_changeAmount);
 			if (temp_min < minNumberOfCoins) {
 				minNumberOfCoins = temp_min;
 				temp_i = i;
 			}
 		}
 	}
-	resultChangeArray[temp_i] = resultChangeArray[temp_i] + 1;
+	coinArray[changeAmount] = temp_i;
 	return minNumberOfCoins;
+}
+
+void createResultChangeArray(int* resultChangeArray, int* coinArray, int* inputArray, int numberOfElements, int changeAmount) {
+	int i;
+	while (changeAmount > 0) {
+		for (i = 0; i < numberOfElements; i++) {
+			if (i == coinArray[changeAmount-1]) {
+//				printf("changeAmount = %d\ncoinArray[changeAmount - 1] = %d\n, coin denomination = %d\n", changeAmount, coinArray[changeAmount - 1], inputArray[i]);
+				resultChangeArray[i] = resultChangeArray[i] + 1;
+				changeAmount = changeAmount - inputArray[i];
+				i = numberOfElements;
+//				printf("new change amount = %d\n\n", changeAmount);
+			}
+		}
+		if (changeAmount == 1) {
+//			printf("changeAmount = %d\ncoinArray[changeAmount - 1] = %d\n, coin denomination = %d\n", changeAmount, coinArray[changeAmount - 1], inputArray[0]);
+			resultChangeArray[0] = resultChangeArray[0] + 1;
+			changeAmount = 0;
+//			printf("new change amount = %d\n\n", changeAmount);
+		}
+	}
 }
