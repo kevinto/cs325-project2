@@ -1,11 +1,12 @@
 /**************************************************************
  * *  Filename: changedp.c
- * *  Coded by:
- * *  Purpose -
+ * *  Coded by: Frank Eslami
+ * *  Purpose - Dynamic programming implementation of coin change
  * *
  * ***************************************************************/
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <limits.h>
 #include "filefunctions.h"
@@ -83,19 +84,49 @@ int main(int argc, char *argv[])
 void executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, char *inputFileName)
 {
 	// Write algorithm here
+	int i, j;
+	int *C = malloc( (changeAmount + 1) * sizeof(int));
+	int *minArrIndex = malloc( (changeAmount + 1) * sizeof(int));
 
-	// TODO: Need to get this value. This is currently a test value
-	int minNumberOfCoins = 3;
 
-	// TODO: Generate the results array. Need to get this value. This is currently a test value
-	int *resultChangeArray = malloc(numberOfElements * sizeof(int));
-	int i;
-	for (i = 0; i < numberOfElements; i++)
-	{
-		resultChangeArray[i] = i;
+	C[0] = 0;	//base case
+	for (i = 1; i <= changeAmount; i++) {
+		C[i] = INT_MAX;	
+		for (j = 0; j < numberOfElements; j++) {
+			if (i >= inputArray[j] && (1 + C[i - inputArray[j]]) < C[i]) {
+				C[i] = 1 + C[i - inputArray[j]];
+				minArrIndex[i] = j;	
+			}		
+		}
+	}	
+	int minNumberOfCoins = C[changeAmount];
+//	printf("min =%d\n", minNumberOfCoins);
+	
+	int *resultChangeArray = malloc( numberOfElements * sizeof(int));
+	memset (resultChangeArray, 0, numberOfElements);
+
+	//Output occurences of each arrayInput index
+	while(changeAmount) {
+		int index = minArrIndex[changeAmount];
+		resultChangeArray[index] += 1;
+//		printf("%d ", resultChangeArray[index]);	//occurences of each inputArray index
+//		printf("%d ", index);	//occurences of each inputArray index
+//		printf("%d ", inputArray[index]);	//values of inputArray 
+		changeAmount = changeAmount - inputArray[minArrIndex[changeAmount]];
 	}
+//	printf("\n");
 
-	// // Output the result to results file
+	/*
+	//Output inputArray values as they occur in sequence for minimum array 
+	while(changeAmount) {
+//		printf("%d ", minArrIndex[changeAmount]);	//occurences of each inputArray index
+		printf("%d ", inputArray[minArrIndex[changeAmount]]);	//values of inputArray 
+		changeAmount = changeAmount - inputArray[minArrIndex[changeAmount]];
+	}
+	printf("\n");
+	*/
+
+	// Output the result to results file
 	outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
 
 	free(resultChangeArray);
