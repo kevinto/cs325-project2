@@ -11,10 +11,13 @@
 #include <limits.h>
 #include "filefunctions.h"
 
-int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, int cw, int cm, int *lowestDepth, int *currLowestDepth);
+const int ARR_MAX = 100;
+
+int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, int *cw, int *cm, int *lowestDepth, int *currLowestDepth);
 void resetArrays(int *array, int arrLen);
 void pushArr(int *array, int arrLen, int value);
 void popArr(int *array, int arrLen);
+void copyArray(int *source, int *target, int numElements);
 
 // Program entry point
 int main(int argc, char *argv[])
@@ -46,16 +49,19 @@ int main(int argc, char *argv[])
 		int minNumberOfCoins = INT_MAX;
 
 		// Initiate Arrays to hold the tree path
-		int cw[1000];
-		int cm[1000];
-		resetArrays(cw, 1000);
-		resetArrays(cm, 1000);
+		int cw[ARR_MAX];
+		int cm[ARR_MAX];
+		resetArrays(cw, ARR_MAX);
+		resetArrays(cm, ARR_MAX);
 
-		pushArr(cw, 1000, 100);
-		popArr(cw, 1000);
+		// For testing
+		// pushArr(cw, ARR_MAX, 100);
+		// copyArray(cw, cm, ARR_MAX);
+		// popArr(cw, ARR_MAX);
 
 		// For debug
-		displayIntArray(cw, 1000);
+		//displayIntArray(cw, ARR_MAX);
+		//displayIntArray(cm, ARR_MAX);
 
 		// Run the algorithm problem in the input file. A problem
 		//	consists of the array of denominations and the amount
@@ -78,20 +84,23 @@ int main(int argc, char *argv[])
 
 			int lowestDepth = INT_MAX;
 			int currLowestDepth = 0;
-			minNumberOfCoins = executeAlgorithm(inputArray, numberOfElements, changeAmount, 1, 1, &lowestDepth, &currLowestDepth);
-			printf("minNumberOfCoins: %d\n", minNumberOfCoins);
+			minNumberOfCoins = executeAlgorithm(inputArray, numberOfElements, changeAmount, cw, cm, &lowestDepth, &currLowestDepth);
 
 			// TODO
 			// 1. rename cw, cm
-			// 2. initite arrays cw and cm
-			// 3. write push, pop, and clear for cw and cm
+			// 2. initite arrays cw and cm - DONE
+			// 3. write push, pop, and clear for cw and cm - DONE
 
 			// Output the result to results file
-			//outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
+			// CopyMinPathToResultArray(cm, ARR_MAX, resultChangeArray, numberOfElements);
+			outputResultToFile(resultChangeArray, numberOfElements, minNumberOfCoins, inputFileName);
 
 			// Cleanup dynamically allocated arrays
 			free(inputArray);
 			free(resultChangeArray);
+
+			resetArrays(cw, ARR_MAX);
+			resetArrays(cm, ARR_MAX);
 		}
 	}
 
@@ -112,7 +121,7 @@ int main(int argc, char *argv[])
  * *  Executes the algorithm
  * *
  * ***************************************************************/
-int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, int cw, int cm, int *lowestDepth, int *currLowestDepth)
+int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, int *cw, int *cm, int *lowestDepth, int *currLowestDepth)
 {
 	int minNumberOfCoins = INT_MAX;
 	int i = 0;
@@ -122,25 +131,24 @@ int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, in
 	{
 		if (inputArray[i] == changeAmount)
 		{
-			// The current denom to the current denom tracker 
-			// cw.Add(inputArray[i]);
+			// The current denom to the current denom tracker
+			pushArr(cw, ARR_MAX, inputArray[i]);
 
 			// If we found a depth that is lower then the lowest found depth
 			//  then save our current denom path
-			if (currLowestDepth < lowestDepth)
+			if ((*currLowestDepth) < (*lowestDepth))
 			{
-				lowestDepth = currLowestDepth;
+				(*lowestDepth) = (*currLowestDepth);
 
 				// Clear our min path
-				// cm.Clear();
+				resetArrays(cm, ARR_MAX);
 
 				// Copy over the current path to the min path
-				// foreach (var item in cw)
-				// {
-				// 	cm.Add(item);
-				// }
+				copyArray(cw, cm, ARR_MAX);
 			}
-			// cw.RemoveAt(cw.Count - 1); // Remove the newly added item.
+
+			// Remove the newly added item.
+			popArr(cw, ARR_MAX);
 
 			minNumberOfCoins = 1;
 			return minNumberOfCoins;
@@ -149,17 +157,18 @@ int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, in
 		{
 			temp_changeAmount = changeAmount - inputArray[i];
 
-			currLowestDepth++;
+			(*currLowestDepth)++;
 
 			// Add the current node to the path before recursing
 			// cw.Add(inputArray[i]);
+			pushArr(cw, ARR_MAX, inputArray[i]);
 
 			int recursiveResult = executeAlgorithm(inputArray, numberOfElements, temp_changeAmount, cw, cm, lowestDepth, currLowestDepth);
 			temp_min = 1 + recursiveResult;
 
 			if (recursiveResult != 0)
 			{
-				// cw.RemoveAt(cw.Count - 1);
+				popArr(cw, ARR_MAX);
 			}
 
 			if (temp_min < minNumberOfCoins)
@@ -167,9 +176,9 @@ int executeAlgorithm(int *inputArray, int numberOfElements, int changeAmount, in
 				minNumberOfCoins = temp_min;
 			}
 
-			if (currLowestDepth != 0)
+			if ((*currLowestDepth) != 0)
 			{
-				currLowestDepth--;
+				(*currLowestDepth)--;
 			}
 		}
 	}
@@ -202,7 +211,7 @@ void popArr(int *array, int arrLen)
 {
 	int i;
 	int idxOfNegative = -1;
-printf("in pop\n");
+
 	// Find the index of -1, if it exists
 	for (i = 0; i < arrLen; i++)
 	{
@@ -217,5 +226,28 @@ printf("in pop\n");
 	if (idxOfNegative != -1)
 	{
 		array[idxOfNegative - 1] = -1;
+	}
+}
+
+void copyArray(int *source, int *target, int numElements)
+{
+	int stopLimit = 0;
+	int i = 0;
+	while (source[i] != -1)
+	{
+		target[i] = source[i];
+		i++;
+
+		if (i >= numElements)
+		{
+			break;
+		}
+
+		// Gives us an out for the while loop
+		stopLimit++;
+		if (stopLimit >= 1000)
+		{
+			break;
+		}
 	}
 }
