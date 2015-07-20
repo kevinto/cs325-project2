@@ -15,13 +15,11 @@ void executeGreedy(int *inputArray, int numberOfElements, int changeAmount);
 // Program entry point
 int main()
 {
-	clock_t timer;  
+	clock_t timer;
 
 	// Values for the divide and conquer
 	int array_n_vals[16] = {1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30}; // 16 denominations
-	// int array_n_vals[7] = {1, 2, 6, 12, 24, 48, 60}; // 7 denominations
-	// int array_n_vals[5] = {1, 5, 10, 25, 50}; // 5 denominations
-
+	//int array_n_vals[4] = {1, 2, 4, 6}; // 16 denominations
 	int initialAmt = 100000000;
 	int numberOfIncrements = 20;
 	int changeAmount = 0;
@@ -80,6 +78,16 @@ void executeGreedy(int *inputArray, int numberOfElements, int changeAmount)
 			changeAmount -= inputArray[i];
 			resultChangeArray[i]++;
 			minNumberOfCoins++;
+
+			if (changeAmount <= 0)
+			{
+				break;
+			}
+		}
+
+		if (changeAmount <= 0)
+		{
+			break;
 		}
 	}
 
