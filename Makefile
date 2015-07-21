@@ -41,4 +41,4 @@ program5: ${SRC6}
 	${CXX} ${SRC6} -o ${PROG5}  
 
 clean:
-	rm -rf ${PROGS} *Amount.txt *_Results.txt
+	rm -rf ${PROGS} *Amount.txt *_Results.txt *change.txt

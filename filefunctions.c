@@ -17,12 +17,11 @@
  * *  n/a
  * *
  * * Purpose:
- * *  Outputs the results to [inputFileName]Amount.txt
+ * *  Outputs the results to [inputFileName]change.txt
  * *
  * ***************************************************************/
 void outputResultToFile(int *resultChangeArray, int numberOfElements, int minNumberOfCoins, char *inputFileName)
 {
-	// TODO: create function to remove the
 	char inputFileNameNoExt[MAX_INPUT_LINE_SIZE];
 	strncpy(inputFileNameNoExt, inputFileName, MAX_INPUT_LINE_SIZE - 1);
 
@@ -35,7 +34,7 @@ void outputResultToFile(int *resultChangeArray, int numberOfElements, int minNum
 	// Create the output file name
 	char outputFileName[MAX_INPUT_LINE_SIZE - 1];
 	strncpy(outputFileName, inputFileNameNoExt, MAX_INPUT_LINE_SIZE - 1);
-	strncat(outputFileName, "Amount.txt", MAX_INPUT_LINE_SIZE - 1);
+	strncat(outputFileName, "change.txt", MAX_INPUT_LINE_SIZE - 1);
 
 	FILE *outputFile = fopen(outputFileName, "a");
 

@@ -18,11 +18,16 @@ int main()
 	clock_t timer;
 
 	// Values for the divide and conquer
-	int array_n_vals[16] = {1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30}; // 16 denominations
-	//int array_n_vals[4] = {1, 2, 4, 6}; // 16 denominations
+	//	int array_n_vals[] = {1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30}; //v1 = prob 6
+	//int array_n_vals[] = {1, 2, 6, 12, 24, 48, 60};	//v2 = prob 5 v1
+	//int array_n_vals[] = {1, 6, 13, 37, 150};	//v3 = prob 5 v2
+	int array_n_vals[] = {1, 5, 10, 25, 50};	//v4 = prob 4 
 	int initialAmt = 100000000;
 	int numberOfIncrements = 20;
 	int changeAmount = 0;
+	
+	int arr_size = sizeof(array_n_vals) / sizeof(array_n_vals[0]);
+	printf("size = %d\n", arr_size);
 
 	FILE *outputGreedy = fopen("Greedy_Timing_Results.txt", "w");  //create output file for greedy algo
 
@@ -37,7 +42,7 @@ int main()
 
 		// Time the greedy algo
 		timer = clock();
-		executeGreedy(array_n_vals, 16, changeAmount);
+		executeGreedy(array_n_vals, arr_size, changeAmount);
 		timer = clock() - timer;
 		fprintf(outputGreedy, "amount: %d\n", changeAmount);
 		fprintf(outputGreedy, "%f\n", (float)timer / (float)CLOCKS_PER_SEC);
